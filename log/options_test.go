@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-kit/kit/log/level"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestOutput(t *testing.T) {
@@ -30,6 +31,21 @@ func TestFormat(t *testing.T) {
 	opts := newOptions(Format(LogfmtFormat))
 
 	assert.Equal(t, LogfmtFormat, opts.format)
+}
+
+func TestFormats(t *testing.T) {
+	formats := []format{JsonFormat, LogfmtFormat}
+
+	for _, f := range formats {
+		t.Run(f.String(), func(t *testing.T) {
+			assert.Contains(t, formatMap, f)
+			assert.Contains(t, formatNameMap, f.String())
+
+			pf, err := ParseFormat(f.String())
+			require.NoError(t, err)
+			assert.Equal(t, f, pf)
+		})
+	}
 }
 
 func TestFormat_Default(t *testing.T) {

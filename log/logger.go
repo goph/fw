@@ -23,7 +23,7 @@ func NewLogger(opts ...LogOption) log.Logger {
 		logger = log.NewJSONLogger(w)
 
 	default:
-		panic(fmt.Sprintf("unsupported log format: %s", o.format))
+		panic(fmt.Sprintf("unsupported log format: %s", o.format.String()))
 	}
 
 	// Add default context
