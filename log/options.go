@@ -4,6 +4,7 @@ import (
 	"io"
 	"os"
 
+	"fmt"
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
 )
@@ -38,7 +39,7 @@ func ParseFormat(formatName string) (format, error) {
 	f, ok := formatNameMap[formatName]
 
 	if !ok {
-		return 0, emperror.NewWithStackTrace("")
+		return 0, emperror.NewWithStackTrace(fmt.Sprintf("invalid log format: %s", formatName))
 	}
 
 	return f, nil
@@ -104,6 +105,21 @@ func Output(ou io.Writer) LogOption {
 
 // Format sets the log format in the logger.
 func Format(f format) LogOption {
+	return func(o *options) {
+		o.format = f
+	}
+}
+
+// FormatString accepts a string and tries to parse it as a log format.
+// If the string cannot be parsed as a format, this method panics.
+//
+// Other than that it behaves like Format.
+func FormatString(sf string) LogOption {
+	f, err := ParseFormat(sf)
+	if err != nil {
+		panic(err)
+	}
+
 	return func(o *options) {
 		o.format = f
 	}

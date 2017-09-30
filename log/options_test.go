@@ -33,6 +33,20 @@ func TestFormat(t *testing.T) {
 	assert.Equal(t, LogfmtFormat, opts.format)
 }
 
+func TestFormatString(t *testing.T) {
+	assert.NotPanics(t, func() {
+		opts := newOptions(FormatString("logfmt"))
+
+		assert.Equal(t, LogfmtFormat, opts.format)
+	})
+}
+
+func TestFormatString_Invalid(t *testing.T) {
+	assert.Panics(t, func() {
+		FormatString("invalid")
+	})
+}
+
 func TestFormats(t *testing.T) {
 	formats := []format{JsonFormat, LogfmtFormat}
 
