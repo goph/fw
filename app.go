@@ -13,15 +13,6 @@ type ApplicationOption func(a *Application)
 
 var defaults []ApplicationOption
 
-// Allows to bind two or more ApplicationOption instances together.
-func ApplicationOptions(opts ...ApplicationOption) ApplicationOption {
-	return func(a *Application) {
-		for _, opt := range opts {
-			opt(a)
-		}
-	}
-}
-
 // Application collects all dependencies and exposes them in a single context.
 type Application struct {
 	logger       log.Logger

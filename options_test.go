@@ -4,8 +4,26 @@ import (
 	"testing"
 
 	"github.com/go-kit/kit/log"
+	"github.com/goph/emperror"
+	"github.com/opentracing/opentracing-go/mocktracer"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestOptions(t *testing.T) {
+	tracer := mocktracer.New()
+	logger := log.NewNopLogger()
+	handler := emperror.NewNopHandler()
+
+	app := NewApplication(Options(
+		Tracer(tracer),
+		Logger(logger),
+		ErrorHandler(handler),
+	))
+
+	assert.Equal(t, tracer, app.Tracer())
+	assert.Equal(t, logger, app.Logger())
+	assert.Equal(t, handler, app.ErrorHandler())
+}
 
 func TestConditional(t *testing.T) {
 	logger := log.NewNopLogger()
