@@ -32,3 +32,10 @@ func Logger(l log.Logger) HandlerOption {
 		o.logger = l
 	}
 }
+
+// Handler appends a handler to the handler stack.
+func Handler(h emperror.Handler) HandlerOption {
+	return func(o *options) {
+		o.handlers = append(o.handlers, h)
+	}
+}
