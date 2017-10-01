@@ -7,6 +7,7 @@
 
 - Additional handler options to error handler
 - Conditional options
+- Function option
 
 ### Changed
 

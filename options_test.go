@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
+	"github.com/goph/fw/error"
 	"github.com/opentracing/opentracing-go/mocktracer"
 	"github.com/stretchr/testify/assert"
 )
@@ -40,4 +41,21 @@ func TestConditional(t *testing.T) {
 
 		assert.NotEqual(t, logger, app.logger)
 	})
+}
+
+func TestOptionFunc(t *testing.T) {
+	app := NewApplication(
+		defaultLogger,
+		OptionFunc(func(a *Application) ApplicationOption {
+			logger := a.Logger()
+
+			return ErrorHandler(
+				error.NewHandler(
+					error.Logger(logger),
+				),
+			)
+		}),
+	)
+
+	assert.Equal(t, error.NewHandler(error.Logger(app.Logger())), app.ErrorHandler())
 }

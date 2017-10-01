@@ -18,3 +18,23 @@ func Conditional(c bool, op ApplicationOption) ApplicationOption {
 		}
 	}
 }
+
+// OptionFunc accepts a function which itself creates an ApplicationOption as well.
+// It is useful when the inner ApplicationOption depends on the application itself (eg. requires the logger).
+//
+// 		app := fw.NewApplication(
+//			fw.OptionFunc(func(a *fw.Application) fw.ApplicationOption {
+//				logger := a.Logger()
+//
+//				return fw.ErrorHandler(
+//					error.NewHandler(
+//						error.Logger(logger),
+//					),
+//				)
+//			}),
+//		)
+func OptionFunc(fn func(a *Application) ApplicationOption) ApplicationOption {
+	return func(a *Application) {
+		fn(a)(a)
+	}
+}
