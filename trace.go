@@ -5,11 +5,11 @@ import (
 )
 
 func init() {
-	defaults = append(defaults, defaultTracer)
+	defaults = append(defaults, DefaultTracer)
 }
 
-// defaultTracer is an ApplicationOption that sets the default tracer.
-func defaultTracer(a *Application) {
+// DefaultTracer is an ApplicationOption that sets the default tracer.
+func DefaultTracer(a *Application) {
 	if a.tracer == nil {
 		a.tracer = opentracing.GlobalTracer()
 	}

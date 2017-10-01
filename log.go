@@ -7,11 +7,11 @@ import (
 
 func init() {
 	// Prepend the default logger
-	defaults = append([]ApplicationOption{defaultLogger}, defaults...)
+	defaults = append([]ApplicationOption{DefaultLogger}, defaults...)
 }
 
-// defaultLogger is an ApplicationOption that sets the default logger.
-func defaultLogger(a *Application) {
+// DefaultLogger is an ApplicationOption that sets the default logger.
+func DefaultLogger(a *Application) {
 	if a.logger == nil {
 		a.logger = log.NewLogger()
 	}

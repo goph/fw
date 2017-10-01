@@ -6,11 +6,11 @@ import (
 )
 
 func init() {
-	defaults = append(defaults, defaultErrorHandler)
+	defaults = append(defaults, DefaultErrorHandler)
 }
 
-// defaultErrorHandler is an ApplicationOption that sets the default error handler.
-func defaultErrorHandler(a *Application) {
+// DefaultErrorHandler is an ApplicationOption that sets the default error handler.
+func DefaultErrorHandler(a *Application) {
 	if a.errorHandler == nil {
 		a.errorHandler = error.NewHandler(
 			error.Logger(a.Logger()),

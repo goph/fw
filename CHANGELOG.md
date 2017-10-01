@@ -12,6 +12,7 @@
 ### Changed
 
 - Renamed `ApplicationOptions` to `Options`
+- Export default options (useful when order of options matters)
 
 
 ## 0.1.0 - 2017-10-01
