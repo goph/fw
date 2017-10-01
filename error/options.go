@@ -39,3 +39,13 @@ func Handler(h emperror.Handler) HandlerOption {
 		o.handlers = append(o.handlers, h)
 	}
 }
+
+// Conditional applies an option if the condition is true.
+// This is useful to avoid using conditional logic when building the option list.
+func Conditional(c bool, op HandlerOption) HandlerOption {
+	return func(o *options) {
+		if c {
+			op(o)
+		}
+	}
+}

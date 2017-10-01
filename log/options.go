@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"fmt"
+
 	"github.com/go-kit/kit/log/level"
 	"github.com/goph/emperror"
 )
@@ -150,5 +151,15 @@ func With(kv ...interface{}) LogOption {
 func Debug(d bool) LogOption {
 	return func(o *options) {
 		o.debug = d
+	}
+}
+
+// Conditional applies an option if the condition is true.
+// This is useful to avoid using conditional logic when building the option list.
+func Conditional(c bool, op LogOption) LogOption {
+	return func(o *options) {
+		if c {
+			op(o)
+		}
 	}
 }

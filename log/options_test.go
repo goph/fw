@@ -116,3 +116,19 @@ func TestWithContext(t *testing.T) {
 
 	assert.Equal(t, append(ctx, ctx2...), opts.ctx)
 }
+
+func TestConditional(t *testing.T) {
+	option := Format(LogfmtFormat)
+
+	t.Run("condition met", func(t *testing.T) {
+		opts := newOptions(Conditional(true, option))
+
+		assert.Equal(t, LogfmtFormat, opts.format)
+	})
+
+	t.Run("condition not met", func(t *testing.T) {
+		opts := newOptions(Conditional(false, option))
+
+		assert.Equal(t, DefaultFormat, opts.format)
+	})
+}

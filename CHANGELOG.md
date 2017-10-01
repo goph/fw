@@ -6,6 +6,7 @@
 ### Added
 
 - Additional handler options to error handler
+- Conditional options
 
 
 ## 0.1.0 - 2017-10-01
