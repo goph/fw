@@ -19,10 +19,12 @@ type Application struct {
 	errorHandler emperror.Handler
 	tracer       opentracing.Tracer
 	closers      []io.Closer
+	entries      map[string]interface{}
 }
 
 func NewApplication(opts ...ApplicationOption) *Application {
 	app := new(Application)
+	app.entries = make(map[string]interface{})
 
 	// Apply options
 	for _, opt := range opts {
