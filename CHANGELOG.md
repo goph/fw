@@ -1,6 +1,13 @@
 # Change Log
 
 
+## Unreleased
+
+### Added
+
+- Add arbitrary entries to the application
+
+
 ## 0.2.0 - 2017-10-02
 
 ### Added
