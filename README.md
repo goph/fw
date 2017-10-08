@@ -8,19 +8,18 @@
 **A simple, unbiased application framework with sane defaults.**
 
 `fw` is a simple application framework for Go. Unlike most of the other
-frameworks, this one is not coupled to a single transport (HTTP, gRPC)
-layer, in fact it does not make any assumptions about your application.
-It can be a daemon, or a simple cron job, or an HTTP server, anything.
+frameworks, this one is not coupled to a single transport layer (HTTP, gRPC),
+in fact it does not make any assumptions about your application.
+It can be a daemon, a simple cron job, or an HTTP server, nearly anything.
 
-On the other hand, it's also a bit opinionated:
-the following are used for certain, common components of an application:
+On the other hand, it's bit opinionated in terms of some
+common application components:
 
-- [go-kit](https://github.com/go-kit/kit/tree/master/log) for logging
-- [emperror](https://github.com/goph/emperror) for error handling
-- [opentracing](http://opentracing.io/) for application traces
+- [go-kit](https://github.com/go-kit/kit/tree/master/log) is used for logging
+- [emperror](https://github.com/goph/emperror) is used for error handling
+- [opentracing](http://opentracing.io/) is used for application traces
 
-That said, you are free to omit the usage of these components,
-if you like.
+That said, using these components in your application is optional.
 
 
 ## Installation
