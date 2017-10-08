@@ -29,7 +29,7 @@ func TestApplication_Get_NotFound(t *testing.T) {
 	entry, err := app.Get("name")
 
 	require.Error(t, err)
-	assert.Equal(t, fw.ErrEntryNotFound, err)
+	assert.EqualError(t, err, "entry not found")
 	assert.Nil(t, entry)
 }
 

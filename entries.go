@@ -4,7 +4,7 @@ import "errors"
 
 // ErrEntryNotFound is returned when an entry is not found in the application.
 // TODO: return contextual error with entry name?
-var ErrEntryNotFound = errors.New("entry not found")
+var errEntryNotFound = errors.New("entry not found")
 
 // Entry registers an arbitrary entry in the application.
 func Entry(n string, e interface{}) ApplicationOption {
@@ -17,7 +17,7 @@ func Entry(n string, e interface{}) ApplicationOption {
 func (a *Application) Get(name string) (interface{}, error) {
 	entry, ok := a.entries[name]
 	if !ok {
-		return nil, ErrEntryNotFound
+		return nil, errEntryNotFound
 	}
 
 	return entry, nil
