@@ -14,7 +14,7 @@ func TestEntry(t *testing.T) {
 	assert.Equal(t, "entry", app.MustGet("name"))
 }
 
-func TestGet(t *testing.T) {
+func TestApplication_Get(t *testing.T) {
 	app := fw.NewApplication(fw.Entry("name", "entry"))
 
 	entry, err := app.Get("name")
@@ -23,7 +23,7 @@ func TestGet(t *testing.T) {
 	assert.Equal(t, "entry", entry)
 }
 
-func TestGet_NotFound(t *testing.T) {
+func TestApplication_Get_NotFound(t *testing.T) {
 	app := fw.NewApplication()
 
 	entry, err := app.Get("name")
@@ -33,7 +33,7 @@ func TestGet_NotFound(t *testing.T) {
 	assert.Nil(t, entry)
 }
 
-func TestMustGet(t *testing.T) {
+func TestApplication_MustGet(t *testing.T) {
 	app := fw.NewApplication(fw.Entry("name", "entry"))
 
 	assert.NotPanics(t, func() {
@@ -43,7 +43,7 @@ func TestMustGet(t *testing.T) {
 	})
 }
 
-func TestMustGet_NotFound(t *testing.T) {
+func TestApplication_MustGet_NotFound(t *testing.T) {
 	app := fw.NewApplication()
 
 	assert.Panics(t, func() {
