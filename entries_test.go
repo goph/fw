@@ -8,14 +8,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestProvide(t *testing.T) {
-	app := fw.NewApplication(fw.Provide("name", "entry"))
+func TestEntry(t *testing.T) {
+	app := fw.NewApplication(fw.Entry("name", "entry"))
 
 	assert.Equal(t, "entry", app.MustGet("name"))
 }
 
 func TestGet(t *testing.T) {
-	app := fw.NewApplication(fw.Provide("name", "entry"))
+	app := fw.NewApplication(fw.Entry("name", "entry"))
 
 	entry, err := app.Get("name")
 
@@ -34,7 +34,7 @@ func TestGet_NotFound(t *testing.T) {
 }
 
 func TestMustGet(t *testing.T) {
-	app := fw.NewApplication(fw.Provide("name", "entry"))
+	app := fw.NewApplication(fw.Entry("name", "entry"))
 
 	assert.NotPanics(t, func() {
 		entry := app.MustGet("name")

@@ -5,8 +5,8 @@ import "errors"
 // ErrEntryNotFound is returned when an entry is not found in the application.
 var ErrEntryNotFound = errors.New("entry not found")
 
-// Provide registers an arbitrary entry in the application.
-func Provide(n string, e interface{}) ApplicationOption {
+// Entry registers an arbitrary entry in the application.
+func Entry(n string, e interface{}) ApplicationOption {
 	return func(a *Application) {
 		a.entries[n] = e
 	}
