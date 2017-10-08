@@ -5,7 +5,22 @@
 [![GoDoc](http://img.shields.io/badge/godoc-reference-5272B4.svg?style=flat-square)](https://godoc.org/github.com/goph/fw)
 
 
-**A simple application framework with sane defaults.**
+**A simple, unbiased application framework with sane defaults.**
+
+`fw` is a simple application framework for Go. Unlike most of the other
+frameworks, this one is not coupled to a single transport (HTTP, gRPC)
+layer, in fact it does not make any assumptions about your application.
+It can be a daemon, or a simple cron job, or an HTTP server, anything.
+
+On the other hand, it's also a bit opinionated:
+the following are used for certain, common components of an application:
+
+- [go-kit](https://github.com/go-kit/kit/tree/master/log) for logging
+- [emperror](https://github.com/goph/emperror) for error handling
+- [opentracing](http://opentracing.io/) for application traces
+
+That said, you are free to omit the usage of these components,
+if you like.
 
 
 ## Installation
