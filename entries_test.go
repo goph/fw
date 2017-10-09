@@ -17,19 +17,18 @@ func TestEntry(t *testing.T) {
 func TestApplication_Get(t *testing.T) {
 	app := fw.NewApplication(fw.Entry("name", "entry"))
 
-	entry, err := app.Get("name")
+	entry, ok := app.Get("name")
 
-	require.NoError(t, err)
+	require.True(t, ok)
 	assert.Equal(t, "entry", entry)
 }
 
 func TestApplication_Get_NotFound(t *testing.T) {
 	app := fw.NewApplication()
 
-	entry, err := app.Get("name")
+	entry, ok := app.Get("name")
 
-	require.Error(t, err)
-	assert.EqualError(t, err, "entry not found")
+	require.False(t, ok)
 	assert.Nil(t, entry)
 }
 

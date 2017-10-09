@@ -1,10 +1,10 @@
 package fw
 
-import "errors"
+import (
+	"fmt"
 
-// ErrEntryNotFound is returned when an entry is not found in the application.
-// TODO: return contextual error with entry name?
-var errEntryNotFound = errors.New("entry not found")
+	"github.com/goph/emperror"
+)
 
 // Entry registers an arbitrary entry in the application.
 func Entry(n string, e interface{}) ApplicationOption {
@@ -14,20 +14,17 @@ func Entry(n string, e interface{}) ApplicationOption {
 }
 
 // Get returns an entry from the application.
-func (a *Application) Get(name string) (interface{}, error) {
+func (a *Application) Get(name string) (interface{}, bool) {
 	entry, ok := a.entries[name]
-	if !ok {
-		return nil, errEntryNotFound
-	}
 
-	return entry, nil
+	return entry, ok
 }
 
 // MustGet returns an entry from the application and panics if it's not found.
 func (a *Application) MustGet(name string) interface{} {
-	entry, err := a.Get(name)
-	if err != nil {
-		panic(err)
+	entry, ok := a.Get(name)
+	if !ok {
+		panic(emperror.NewWithStackTrace(fmt.Sprintf("cannot find entry: %s", name)))
 	}
 
 	return entry
