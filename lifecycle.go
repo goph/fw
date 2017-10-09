@@ -8,7 +8,7 @@ import (
 // They are called during the application lifecycleHooks.
 type Hook struct {
 	PreStart  func() error
-	OnStart   func(context.Context) error
+	OnStart   func(context.Context, chan<- interface{}) error
 	PostStart func() error
 
 	PreShutdown  func() error
@@ -25,29 +25,33 @@ func LifecycleHook(h Hook) ApplicationOption {
 
 // Start runs all PreStart, OnStart and PostStart hooks,
 // returning immediately if it encounters an error.
-func (a *Application) Start(ctx context.Context) error {
+func (a *Application) Start(ctx context.Context) (<-chan interface{}, error) {
+	done := make(chan interface{}, len(a.lifecycleHooks))
+
 	for _, hook := range a.lifecycleHooks {
 		err := invokeHook(hook.PreStart)
 		if err != nil {
-			return err
+			return done, err
 		}
 	}
 
 	for _, hook := range a.lifecycleHooks {
-		err := invokeHookCtx(hook.OnStart, ctx)
-		if err != nil {
-			return err
+		if hook.OnStart != nil {
+			err := hook.OnStart(ctx, done)
+			if err != nil {
+				return done, err
+			}
 		}
 	}
 
 	for _, hook := range a.lifecycleHooks {
 		err := invokeHook(hook.PostStart)
 		if err != nil {
-			return err
+			return done, err
 		}
 	}
 
-	return nil
+	return done, nil
 }
 
 // Shutdown runs all PreShutdown, OnShutdown and PostShutdown hooks,

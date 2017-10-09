@@ -15,7 +15,11 @@ func TestLifecycleHook(t *testing.T) {
 
 	hook := fw.Hook{
 		PreStart:  testHook(&preStart),
-		OnStart:   testHookCtx(&onStart),
+		OnStart:   func(ctx context.Context, done chan<- interface{}) error {
+			onStart = true
+
+			return nil
+		},
 		PostStart: testHook(&postStart),
 
 		PreShutdown:  testHook(&preShutdown),
@@ -25,7 +29,7 @@ func TestLifecycleHook(t *testing.T) {
 
 	app := fw.NewApplication(fw.LifecycleHook(hook))
 
-	startErr := app.Start(context.Background())
+	_, startErr := app.Start(context.Background())
 	shutdownErr := app.Shutdown(context.Background())
 
 	require.NoError(t, startErr)
