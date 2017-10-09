@@ -152,8 +152,8 @@ func (a *Application) Run() {
 	// The application stopped because of an error
 	if err, ok := r.(error); ok || err != nil {
 		a.errorHandler.Handle(err)
-	} else if signal, ok := r.(os.Signal); ok { // The application stopped because of an os signal
-		level.Info(a.logger).Log("msg", fmt.Sprintf("captured %v signal", signal))
+	} else if sig, ok := r.(os.Signal); ok { // The application stopped because of an os signal
+		level.Info(a.logger).Log("msg", fmt.Sprintf("captured %v signal", sig))
 	}
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), a.lifecycleTimeout)
