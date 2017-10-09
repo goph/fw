@@ -39,6 +39,7 @@ var SignalHook = Hook{
 
 		go func() {
 			done <- <-ch
+			signal.Stop(ch)
 		}()
 
 		return nil
