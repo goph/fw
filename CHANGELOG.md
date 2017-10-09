@@ -7,6 +7,7 @@
 
 - Add arbitrary entries to the application
 - Lifecycle management
+- Error handling in application closer
 
 
 ## 0.2.0 - 2017-10-02

@@ -1,6 +1,10 @@
 package fw
 
-import "io"
+import (
+	"io"
+
+	"github.com/goph/emperror"
+)
 
 // Closer returns an ApplicationOption that appends a closer to the Application's closer list.
 func Closer(c io.Closer) ApplicationOption {
@@ -13,6 +17,11 @@ func Closer(c io.Closer) ApplicationOption {
 // The resources are closed in a reversed order (just like how subsequent defer Close() calls would work).
 // Errors are suppressed (again, like in case of defer calls).
 func (a *Application) Close() error {
+	err := emperror.Recover(recover())
+	if err != nil {
+		a.ErrorHandler().Handle(err)
+	}
+
 	// TODO: log application closing and handle errors?
 	if len(a.closers) == 0 {
 		return nil
