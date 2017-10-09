@@ -6,6 +6,7 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
 	"github.com/opentracing/opentracing-go"
+	"time"
 )
 
 // ApplicationOption sets options in the Application.
@@ -15,11 +16,13 @@ var defaults []ApplicationOption
 
 // Application collects all dependencies and exposes them in a single context.
 type Application struct {
-	logger       log.Logger
-	errorHandler emperror.Handler
-	tracer       opentracing.Tracer
-	closers      []io.Closer
-	entries      map[string]interface{}
+	logger           log.Logger
+	errorHandler     emperror.Handler
+	tracer           opentracing.Tracer
+	closers          []io.Closer
+	entries          map[string]interface{}
+	lifecycleHooks   []Hook
+	lifecycleTimeout time.Duration
 }
 
 func NewApplication(opts ...ApplicationOption) *Application {
