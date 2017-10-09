@@ -36,7 +36,10 @@ var SignalHook = Hook{
 		ch := make(chan os.Signal, 1)
 		signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 
-		done <- <-ch
+		go func() {
+			done <- <-ch
+		}()
+
 		return nil
 	},
 }
