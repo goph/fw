@@ -18,11 +18,11 @@ const defaultTimeout = 15 * time.Second
 // They are called during the application lifecycleHooks.
 type Hook struct {
 	PreStart  func() error
-	OnStart   func(context.Context, chan<- interface{}) error
+	OnStart   func(ctx context.Context, done chan<- interface{}) error
 	PostStart func() error
 
 	PreShutdown  func() error
-	OnShutdown   func(context.Context) error
+	OnShutdown   func(ctx context.Context) error
 	PostShutdown func() error
 }
 
