@@ -137,7 +137,7 @@ func (a *Application) Shutdown(ctx context.Context) error {
 //
 // See Start and Stop for application lifecycle details.
 func (a *Application) Run() {
-	startCtx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	startCtx, cancel := context.WithTimeout(context.Background(), a.lifecycleTimeout)
 	defer cancel()
 
 	done, err := a.Start(startCtx)
@@ -155,7 +155,7 @@ func (a *Application) Run() {
 		level.Info(a.logger).Log("msg", fmt.Sprintf("captured %v signal", signal))
 	}
 
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), a.lifecycleTimeout)
 	defer cancel()
 
 	if err := a.Shutdown(shutdownCtx); err != nil {
