@@ -2,11 +2,12 @@ package fw
 
 import (
 	"io"
+	"time"
 
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
 	"github.com/opentracing/opentracing-go"
-	"time"
+	"go.uber.org/dig"
 )
 
 // ApplicationOption sets options in the Application.
@@ -16,6 +17,7 @@ var defaults []ApplicationOption
 
 // Application collects all dependencies and exposes them in a single context.
 type Application struct {
+	container        *dig.Container
 	logger           log.Logger
 	errorHandler     emperror.Handler
 	tracer           opentracing.Tracer
@@ -26,8 +28,10 @@ type Application struct {
 }
 
 func NewApplication(opts ...ApplicationOption) *Application {
-	app := new(Application)
-	app.entries = make(map[string]interface{})
+	app := &Application{
+		container: dig.New(),
+		entries:   make(map[string]interface{}),
+	}
 
 	// Apply options
 	for _, opt := range opts {
