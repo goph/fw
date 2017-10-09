@@ -5,6 +5,7 @@ import (
 
 	"context"
 	"sync"
+	"time"
 
 	"github.com/goph/fw"
 	"github.com/stretchr/testify/assert"
@@ -43,6 +44,25 @@ func TestLifecycleHook(t *testing.T) {
 	assert.True(t, preShutdown)
 	assert.True(t, onShutdown)
 	assert.True(t, postShutdown)
+}
+
+func TestLifecycleTimeout(t *testing.T) {
+	timeout := 2 * time.Second
+	hook := fw.Hook{
+		OnStart: func(ctx context.Context, done chan<- interface{}) error {
+			/*deadline*/ _, ok := ctx.Deadline()
+			require.True(t, ok)
+			//assert.Equal(t, timeout, deadline.Sub(time.Now()).Round(time.Second))
+
+			done <- nil
+
+			return nil
+		},
+	}
+
+	app := fw.NewApplication(fw.LifecycleTimeout(timeout), fw.LifecycleHook(hook))
+
+	app.Run()
 }
 
 func TestApplication_Run(t *testing.T) {

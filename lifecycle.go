@@ -11,6 +11,10 @@ import (
 	"github.com/go-kit/kit/log/level"
 )
 
+func init() {
+	defaults = append(defaults, LifecycleTimeout(defaultTimeout))
+}
+
 // defaultTimeout is used the context is created within the Application (eg. in Run).
 const defaultTimeout = 15 * time.Second
 
@@ -44,13 +48,20 @@ func LifecycleHook(h Hook) ApplicationOption {
 	}
 }
 
+// LifecycleTimeout sets the default lifecycle timeout for the application.
+func LifecycleTimeout(d time.Duration) ApplicationOption {
+	return func(a *Application) {
+		a.lifecycleTimeout = d
+	}
+}
+
 // Start runs all PreStart, OnStart and PostStart hooks,
 // returning immediately if it encounters an error.
 func (a *Application) Start(ctx context.Context) (<-chan interface{}, error) {
 	if timeout, ok := ctx.Deadline(); ok {
 		level.Debug(a.logger).Log(
 			"msg", "starting up with timeout",
-			"timeout", timeout,
+			"timeout", timeout.Sub(time.Now()).Round(time.Second).Seconds(),
 		)
 	}
 
