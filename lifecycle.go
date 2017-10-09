@@ -2,7 +2,11 @@ package fw
 
 import (
 	"context"
+	"time"
 )
+
+// defaultTimeout is used the context is created within the Application (eg. in Run).
+const defaultTimeout = 15 * time.Second
 
 // Hook is a set of lifecycleHooks callbacks, either of which can be nil.
 // They are called during the application lifecycleHooks.
@@ -79,6 +83,36 @@ func (a *Application) Shutdown(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+// Run starts the application, blocks on the signals channel, and then
+// gracefully shuts the application down. It uses DefaultTimeout for the start
+// and stop timeouts.
+//
+// See Start and Stop for application lifecycle details.
+func (a *Application) Run() {
+	startCtx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	defer cancel()
+
+	done, err := a.Start(startCtx)
+	if err != nil {
+		a.errorHandler.Handle(err)
+		return
+	}
+
+	r := <-done
+
+	// The application stopped because of an error
+	if err, ok := r.(error); ok || err != nil {
+		a.errorHandler.Handle(err)
+	}
+
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	defer cancel()
+
+	if err := a.Shutdown(shutdownCtx); err != nil {
+		a.errorHandler.Handle(err)
+	}
 }
 
 // invokeHook checks if a hook is nil first.
