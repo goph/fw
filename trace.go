@@ -5,7 +5,7 @@ import (
 )
 
 func init() {
-	defaults = append(defaults, DefaultTracer)
+	defaults = append(defaults, optionFunc(DefaultTracer))
 }
 
 // DefaultTracer is an ApplicationOption that sets the default tracer.
@@ -16,10 +16,10 @@ func DefaultTracer(a *Application) {
 }
 
 // Tracer returns an ApplicationOption that sets the tracer.
-func Tracer(t opentracing.Tracer) ApplicationOption {
-	return func(a *Application) {
+func Tracer(t opentracing.Tracer) Option {
+	return optionFunc(func(a *Application) {
 		a.tracer = t
-	}
+	})
 }
 
 // Tracer returns the application tracer.

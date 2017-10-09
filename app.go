@@ -10,10 +10,16 @@ import (
 	"go.uber.org/dig"
 )
 
-// ApplicationOption sets options in the Application.
-type ApplicationOption func(a *Application)
+// Option sets options in the Application.
+type Option interface {
+	apply(*Application)
+}
 
-var defaults []ApplicationOption
+type optionFunc func(*Application)
+
+func (f optionFunc) apply(app *Application) { f(app) }
+
+var defaults []Option
 
 // Application collects all dependencies and exposes them in a single context.
 type Application struct {
@@ -27,7 +33,7 @@ type Application struct {
 	lifecycleTimeout time.Duration
 }
 
-func NewApplication(opts ...ApplicationOption) *Application {
+func NewApplication(opts ...Option) *Application {
 	app := &Application{
 		container: dig.New(),
 		entries:   make(map[string]interface{}),
@@ -35,12 +41,12 @@ func NewApplication(opts ...ApplicationOption) *Application {
 
 	// Apply options
 	for _, opt := range opts {
-		opt(app)
+		opt.apply(app)
 	}
 
 	// Apply defaults
 	for _, def := range defaults {
-		def(app)
+		def.apply(app)
 	}
 
 	return app

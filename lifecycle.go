@@ -47,17 +47,17 @@ var SignalHook = Hook{
 }
 
 // LifecycleHook registers a lifecycle hook in the application.
-func LifecycleHook(h Hook) ApplicationOption {
-	return func(a *Application) {
+func LifecycleHook(h Hook) Option {
+	return optionFunc(func(a *Application) {
 		a.lifecycleHooks = append(a.lifecycleHooks, h)
-	}
+	})
 }
 
 // LifecycleTimeout sets the default lifecycle timeout for the application.
-func LifecycleTimeout(d time.Duration) ApplicationOption {
-	return func(a *Application) {
+func LifecycleTimeout(d time.Duration) Option {
+	return optionFunc(func(a *Application) {
 		a.lifecycleTimeout = d
-	}
+	})
 }
 
 // Start runs all PreStart, OnStart and PostStart hooks,

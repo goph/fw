@@ -45,8 +45,8 @@ func TestConditional(t *testing.T) {
 
 func TestOptionFunc(t *testing.T) {
 	app := NewApplication(
-		DefaultLogger,
-		OptionFunc(func(a *Application) ApplicationOption {
+		optionFunc(DefaultLogger),
+		OptionFunc(func(a *Application) Option {
 			logger := a.Logger()
 
 			return ErrorHandler(

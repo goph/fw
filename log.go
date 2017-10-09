@@ -7,7 +7,7 @@ import (
 
 func init() {
 	// Prepend the default logger
-	defaults = append([]ApplicationOption{DefaultLogger}, defaults...)
+	defaults = append([]Option{optionFunc(DefaultLogger)}, defaults...)
 }
 
 // DefaultLogger is an ApplicationOption that sets the default logger.
@@ -18,10 +18,10 @@ func DefaultLogger(a *Application) {
 }
 
 // Logger returns an ApplicationOption that sets the logger.
-func Logger(l kitlog.Logger) ApplicationOption {
-	return func(a *Application) {
+func Logger(l kitlog.Logger) Option {
+	return optionFunc(func(a *Application) {
 		a.logger = l
-	}
+	})
 }
 
 // Logger returns the application logger.

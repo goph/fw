@@ -7,10 +7,10 @@ import (
 )
 
 // Closer returns an ApplicationOption that appends a closer to the Application's closer list.
-func Closer(c io.Closer) ApplicationOption {
-	return func(a *Application) {
+func Closer(c io.Closer) Option {
+	return optionFunc(func(a *Application) {
 		a.closers = append(a.closers, c)
-	}
+	})
 }
 
 // Close implements the common closer interface and closes the underlying resources.

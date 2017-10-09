@@ -7,10 +7,10 @@ import (
 )
 
 // Entry registers an arbitrary entry in the application.
-func Entry(n string, e interface{}) ApplicationOption {
-	return func(a *Application) {
+func Entry(n string, e interface{}) Option {
+	return optionFunc(func(a *Application) {
 		a.entries[n] = e
-	}
+	})
 }
 
 // Get returns an entry from the application.

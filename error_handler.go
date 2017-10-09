@@ -6,7 +6,7 @@ import (
 )
 
 func init() {
-	defaults = append(defaults, DefaultErrorHandler)
+	defaults = append(defaults, optionFunc(DefaultErrorHandler))
 }
 
 // DefaultErrorHandler is an ApplicationOption that sets the default error handler.
@@ -19,10 +19,10 @@ func DefaultErrorHandler(a *Application) {
 }
 
 // ErrorHandler returns an ApplicationOption that sets the error handler.
-func ErrorHandler(h emperror.Handler) ApplicationOption {
-	return func(a *Application) {
+func ErrorHandler(h emperror.Handler) Option {
+	return optionFunc(func(a *Application) {
 		a.errorHandler = h
-	}
+	})
 }
 
 // ErrorHandler returns the application error handler.
