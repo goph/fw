@@ -3,9 +3,10 @@ package fw
 import (
 	"context"
 	"fmt"
-	"github.com/go-kit/kit/log/level"
 	"os"
 	"time"
+
+	"github.com/go-kit/kit/log/level"
 )
 
 // defaultTimeout is used the context is created within the Application (eg. in Run).
