@@ -2,6 +2,9 @@ package fw
 
 import (
 	"context"
+	"fmt"
+	"github.com/go-kit/kit/log/level"
+	"os"
 	"time"
 )
 
@@ -30,6 +33,13 @@ func LifecycleHook(h Hook) ApplicationOption {
 // Start runs all PreStart, OnStart and PostStart hooks,
 // returning immediately if it encounters an error.
 func (a *Application) Start(ctx context.Context) (<-chan interface{}, error) {
+	if timeout, ok := ctx.Deadline(); ok {
+		level.Debug(a.logger).Log(
+			"msg", "starting up with timeout",
+			"timeout", timeout,
+		)
+	}
+
 	done := make(chan interface{}, len(a.lifecycleHooks))
 
 	for _, hook := range a.lifecycleHooks {
@@ -61,6 +71,13 @@ func (a *Application) Start(ctx context.Context) (<-chan interface{}, error) {
 // Shutdown runs all PreShutdown, OnShutdown and PostShutdown hooks,
 // returning immediately if it encounters an error.
 func (a *Application) Shutdown(ctx context.Context) error {
+	if timeout, ok := ctx.Deadline(); ok {
+		level.Debug(a.logger).Log(
+			"msg", "shutting down with timeout",
+			"timeout", timeout,
+		)
+	}
+
 	for _, hook := range a.lifecycleHooks {
 		err := invokeHook(hook.PreShutdown)
 		if err != nil {
@@ -105,6 +122,8 @@ func (a *Application) Run() {
 	// The application stopped because of an error
 	if err, ok := r.(error); ok || err != nil {
 		a.errorHandler.Handle(err)
+	} else if signal, ok := r.(os.Signal); ok { // The application stopped because of an os signal
+		level.Info(a.logger).Log("msg", fmt.Sprintf("captured %v signal", signal))
 	}
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
