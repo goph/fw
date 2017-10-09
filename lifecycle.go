@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/go-kit/kit/log/level"
@@ -22,6 +24,17 @@ type Hook struct {
 	PreShutdown  func() error
 	OnShutdown   func(context.Context) error
 	PostShutdown func() error
+}
+
+// SignalHook stops the application based on os signals.
+var SignalHook = Hook{
+	OnStart: func(ctx context.Context, done chan<- interface{}) error {
+		ch := make(chan os.Signal, 1)
+		signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
+
+		done <- <-ch
+		return nil
+	},
 }
 
 // LifecycleHook registers a lifecycle hook in the application.
