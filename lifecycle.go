@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/go-kit/kit/log/level"
+	"math"
 )
 
 func init() {
@@ -64,7 +65,7 @@ func (a *Application) Start(ctx context.Context) (<-chan interface{}, error) {
 	if timeout, ok := ctx.Deadline(); ok {
 		level.Debug(a.logger).Log(
 			"msg", "starting up with timeout",
-			"timeout", timeout.Sub(time.Now()).Truncate(time.Second).Seconds(),
+			"timeout", math.Floor(timeout.Sub(time.Now()).Seconds()),
 		)
 	}
 
@@ -102,7 +103,7 @@ func (a *Application) Shutdown(ctx context.Context) error {
 	if timeout, ok := ctx.Deadline(); ok {
 		level.Debug(a.logger).Log(
 			"msg", "shutting down with timeout",
-			"timeout", timeout.Sub(time.Now()).Truncate(time.Second).Seconds(),
+			"timeout", math.Floor(timeout.Sub(time.Now()).Seconds()),
 		)
 	}
 
