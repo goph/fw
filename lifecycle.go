@@ -99,7 +99,7 @@ func (a *Application) Shutdown(ctx context.Context) error {
 	if timeout, ok := ctx.Deadline(); ok {
 		level.Debug(a.logger).Log(
 			"msg", "shutting down with timeout",
-			"timeout", timeout,
+			"timeout", timeout.Sub(time.Now()).Round(time.Second).Seconds(),
 		)
 	}
 
