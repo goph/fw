@@ -3,13 +3,13 @@ package fw
 import (
 	"context"
 	"fmt"
+	"math"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
 	"github.com/go-kit/kit/log/level"
-	"math"
 )
 
 func init() {
