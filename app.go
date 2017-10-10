@@ -15,15 +15,31 @@ type Option interface {
 	apply(*Application)
 }
 
+// optionFunc makes an Option from a function matching apply's signature.
 type optionFunc func(*Application)
 
 func (f optionFunc) apply(app *Application) { f(app) }
+
+// Provide registers constructors in the application's dependency injection container.
+//
+// See the documentation at http://go.uber.org/dig for details about constructor function definitions.
+func Provide(constructors ...interface{}) Option {
+	return provideOption(constructors)
+}
+
+type provideOption []interface{}
+
+func (p provideOption) apply(app *Application) {
+	app.constructors = append(app.constructors, p...)
+}
 
 var defaults []Option
 
 // Application collects all dependencies and exposes them in a single context.
 type Application struct {
-	container        *dig.Container
+	container    *dig.Container
+	constructors []interface{}
+
 	logger           log.Logger
 	errorHandler     emperror.Handler
 	tracer           opentracing.Tracer
