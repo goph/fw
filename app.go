@@ -33,6 +33,20 @@ func (p provideOption) apply(app *Application) {
 	app.constructors = append(app.constructors, p...)
 }
 
+// Logger sets the application logger used for logging application lifecycle.
+func Logger(logger log.Logger) Option {
+	return optionFunc(func(app *Application) {
+		app.logger = logger
+	})
+}
+
+// ErrorHandler sets the error handler in the application.
+func ErrorHandler(handler emperror.Handler) Option {
+	return optionFunc(func(a *Application) {
+		a.errorHandler = handler
+	})
+}
+
 var defaults []Option
 
 // Application collects all dependencies and exposes them in a single context.
@@ -40,8 +54,9 @@ type Application struct {
 	container    *dig.Container
 	constructors []interface{}
 
-	logger           log.Logger
-	errorHandler     emperror.Handler
+	logger       log.Logger
+	errorHandler emperror.Handler
+
 	tracer           opentracing.Tracer
 	closers          []io.Closer
 	entries          map[string]interface{}
@@ -58,6 +73,16 @@ func New(opts ...Option) *Application {
 	// Apply options
 	for _, opt := range opts {
 		opt.apply(app)
+	}
+
+	// Default logger
+	if app.logger == nil {
+		app.logger = log.NewNopLogger()
+	}
+
+	// Default error handler
+	if app.errorHandler == nil {
+		app.errorHandler = emperror.NewNopHandler()
 	}
 
 	// Apply defaults

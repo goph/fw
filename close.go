@@ -19,7 +19,7 @@ func Closer(c io.Closer) Option {
 func (a *Application) Close() error {
 	err := emperror.Recover(recover())
 	if err != nil {
-		a.ErrorHandler().Handle(err)
+		a.errorHandler.Handle(err)
 	}
 
 	// TODO: log application closing and handle errors?
