@@ -7,7 +7,7 @@ func ExampleProvide() {
 	type B struct{}
 	type C struct{}
 
-	fw.NewApplication(
+	fw.New(
 		fw.Provide(func(*A, *B) *C { // Provides type *C, depends on *A and *B.
 			return &C{}
 		}),
@@ -19,7 +19,7 @@ func ExampleProvide_error() {
 	type B struct{}
 	type C struct{}
 
-	fw.NewApplication(
+	fw.New(
 		fw.Provide(func(*A, *B) (*C, error) { // Provides type *C, depends on *A and *B, and indicates failure by returning an error.
 			return &C{}, nil
 		}),
@@ -31,7 +31,7 @@ func ExampleProvide_multiple() {
 	type B struct{}
 	type C struct{}
 
-	fw.NewApplication(
+	fw.New(
 		fw.Provide(func(*A) (*B, *C, error) { // Provides type *B and *C, depends on *A, and can fail.
 			return &B{}, &C{}, nil
 		}),
@@ -43,7 +43,7 @@ func ExampleProvide_multipleConstructors() {
 	type B struct{}
 	type C struct{}
 
-	fw.NewApplication(
+	fw.New(
 		fw.Provide(
 			func(*B) (*C, error) { // The order of constructors does not matter.
 				return &C{}, nil

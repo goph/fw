@@ -15,7 +15,7 @@ func TestOptions(t *testing.T) {
 	logger := log.NewNopLogger()
 	handler := emperror.NewNopHandler()
 
-	app := NewApplication(Options(
+	app := New(Options(
 		Tracer(tracer),
 		Logger(logger),
 		ErrorHandler(handler),
@@ -31,20 +31,20 @@ func TestConditional(t *testing.T) {
 	option := Logger(logger)
 
 	t.Run("condition met", func(t *testing.T) {
-		app := NewApplication(Conditional(true, option))
+		app := New(Conditional(true, option))
 
 		assert.Equal(t, logger, app.logger)
 	})
 
 	t.Run("condition not met", func(t *testing.T) {
-		app := NewApplication(Conditional(false, option))
+		app := New(Conditional(false, option))
 
 		assert.NotEqual(t, logger, app.logger)
 	})
 }
 
 func TestOptionFunc(t *testing.T) {
-	app := NewApplication(
+	app := New(
 		optionFunc(DefaultLogger),
 		OptionFunc(func(a *Application) Option {
 			logger := a.Logger()

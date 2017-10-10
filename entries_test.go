@@ -9,13 +9,13 @@ import (
 )
 
 func TestEntry(t *testing.T) {
-	app := fw.NewApplication(fw.Entry("name", "entry"))
+	app := fw.New(fw.Entry("name", "entry"))
 
 	assert.Equal(t, "entry", app.MustGet("name"))
 }
 
 func TestApplication_Get(t *testing.T) {
-	app := fw.NewApplication(fw.Entry("name", "entry"))
+	app := fw.New(fw.Entry("name", "entry"))
 
 	entry, ok := app.Get("name")
 
@@ -24,7 +24,7 @@ func TestApplication_Get(t *testing.T) {
 }
 
 func TestApplication_Get_NotFound(t *testing.T) {
-	app := fw.NewApplication()
+	app := fw.New()
 
 	entry, ok := app.Get("name")
 
@@ -33,7 +33,7 @@ func TestApplication_Get_NotFound(t *testing.T) {
 }
 
 func TestApplication_MustGet(t *testing.T) {
-	app := fw.NewApplication(fw.Entry("name", "entry"))
+	app := fw.New(fw.Entry("name", "entry"))
 
 	assert.NotPanics(t, func() {
 		entry := app.MustGet("name")
@@ -43,7 +43,7 @@ func TestApplication_MustGet(t *testing.T) {
 }
 
 func TestApplication_MustGet_NotFound(t *testing.T) {
-	app := fw.NewApplication()
+	app := fw.New()
 
 	assert.Panics(t, func() {
 		app.MustGet("name")

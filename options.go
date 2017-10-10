@@ -22,7 +22,7 @@ func Conditional(c bool, op Option) Option {
 // OptionFunc accepts a function which itself creates an ApplicationOption as well.
 // It is useful when the inner ApplicationOption depends on the application itself (eg. requires the logger).
 //
-// 		app := fw.NewApplication(
+// 		app := fw.New(
 //			fw.OptionFunc(func(a *fw.Application) fw.ApplicationOption {
 //				logger := a.Logger()
 //

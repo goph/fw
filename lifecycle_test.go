@@ -29,7 +29,7 @@ func TestLifecycleHook(t *testing.T) {
 		PostShutdown: testHook(&postShutdown),
 	}
 
-	app := fw.NewApplication(fw.LifecycleHook(hook))
+	app := fw.New(fw.LifecycleHook(hook))
 
 	_, startErr := app.Start(context.Background())
 	shutdownErr := app.Shutdown(context.Background())
@@ -60,7 +60,7 @@ func TestLifecycleTimeout(t *testing.T) {
 		},
 	}
 
-	app := fw.NewApplication(fw.LifecycleTimeout(timeout), fw.LifecycleHook(hook))
+	app := fw.New(fw.LifecycleTimeout(timeout), fw.LifecycleHook(hook))
 
 	app.Run()
 }
@@ -92,7 +92,7 @@ func TestApplication_Run(t *testing.T) {
 		PostShutdown: testHook(&postShutdown),
 	}
 
-	app := fw.NewApplication(fw.LifecycleHook(hook))
+	app := fw.New(fw.LifecycleHook(hook))
 
 	var wg sync.WaitGroup
 

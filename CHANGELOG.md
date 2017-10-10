@@ -1,6 +1,17 @@
 # Change Log
 
 
+## Unreleased
+
+### Added
+
+- [Dig](http://go.uber.org/dig) dependency injection container
+
+### Changed
+
+- Renamed `NewApplication` to `New`
+
+
 ## 0.3.0 - 2017-10-09
 
 ### Added

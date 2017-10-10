@@ -49,7 +49,7 @@ type Application struct {
 	lifecycleTimeout time.Duration
 }
 
-func NewApplication(opts ...Option) *Application {
+func New(opts ...Option) *Application {
 	app := &Application{
 		container: dig.New(),
 		entries:   make(map[string]interface{}),

@@ -12,13 +12,13 @@ import (
 func TestLogger(t *testing.T) {
 	logger := kitlog.NewNopLogger()
 
-	app := fw.NewApplication(fw.Logger(logger))
+	app := fw.New(fw.Logger(logger))
 
 	assert.Equal(t, logger, app.Logger())
 }
 
 func TestApplication_Logger(t *testing.T) {
-	app := fw.NewApplication()
+	app := fw.New()
 
 	assert.Equal(t, log.NewLogger(), app.Logger())
 }

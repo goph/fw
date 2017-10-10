@@ -13,7 +13,7 @@ import (
 func TestErrorHandler(t *testing.T) {
 	handler := emperror.NewNopHandler()
 
-	app := fw.NewApplication(fw.ErrorHandler(handler))
+	app := fw.New(fw.ErrorHandler(handler))
 
 	assert.Equal(t, handler, app.ErrorHandler())
 }
@@ -21,7 +21,7 @@ func TestErrorHandler(t *testing.T) {
 func TestApplication_ErrorHandler(t *testing.T) {
 	logger := log.NewNopLogger()
 
-	app := fw.NewApplication(fw.Logger(logger))
+	app := fw.New(fw.Logger(logger))
 
 	assert.Equal(t, error.NewHandler(error.Logger(logger)), app.ErrorHandler())
 }
