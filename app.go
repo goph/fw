@@ -45,6 +45,19 @@ func ErrorHandler(handler emperror.Handler) Option {
 	})
 }
 
+// Options composes a collection of Option instances into a single Option.
+func Options(opts ...Option) Option {
+	return options(opts)
+}
+
+type options []Option
+
+func (o options) apply(app *Application) {
+	for _, opt := range o {
+		opt.apply(app)
+	}
+}
+
 // Application collects all dependencies and exposes them in a single context.
 type Application struct {
 	container    *dig.Container
