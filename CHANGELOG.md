@@ -11,6 +11,14 @@
 
 - Renamed `NewApplication` to `New`
 
+### Removed
+
+- Logger constructors
+- Error handler constructors
+- Tracing support
+- Application closer
+- Arbitrary entries
+
 
 ## 0.3.0 - 2017-10-09
 

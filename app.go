@@ -53,7 +53,6 @@ type Application struct {
 	logger       log.Logger
 	errorHandler emperror.Handler
 
-	entries          map[string]interface{}
 	lifecycleHooks   []Hook
 	lifecycleTimeout time.Duration
 }
@@ -61,7 +60,6 @@ type Application struct {
 func New(opts ...Option) *Application {
 	app := &Application{
 		container: dig.New(),
-		entries:   make(map[string]interface{}),
 	}
 
 	// Apply options
