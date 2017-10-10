@@ -57,7 +57,7 @@ type Application struct {
 	lifecycleTimeout time.Duration
 }
 
-func New(opts ...Option) *Application {
+func New(opts ...Option) (*Application, error) {
 	app := &Application{
 		container: dig.New(),
 	}
@@ -82,5 +82,13 @@ func New(opts ...Option) *Application {
 		app.lifecycleTimeout = defaultTimeout
 	}
 
-	return app
+	// Register the constructors in the container
+	for _, ctor := range app.constructors {
+		err := app.container.Provide(ctor)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return app, nil
 }
