@@ -12,10 +12,6 @@ import (
 	"github.com/go-kit/kit/log/level"
 )
 
-func init() {
-	defaults = append(defaults, LifecycleTimeout(defaultTimeout))
-}
-
 // defaultTimeout is used the context is created within the Application (eg. in Run).
 const defaultTimeout = 15 * time.Second
 

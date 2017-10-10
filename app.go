@@ -5,7 +5,6 @@ import (
 
 	"github.com/go-kit/kit/log"
 	"github.com/goph/emperror"
-	"github.com/opentracing/opentracing-go"
 	"go.uber.org/dig"
 )
 
@@ -46,8 +45,6 @@ func ErrorHandler(handler emperror.Handler) Option {
 	})
 }
 
-var defaults []Option
-
 // Application collects all dependencies and exposes them in a single context.
 type Application struct {
 	container    *dig.Container
@@ -56,7 +53,6 @@ type Application struct {
 	logger       log.Logger
 	errorHandler emperror.Handler
 
-	tracer           opentracing.Tracer
 	entries          map[string]interface{}
 	lifecycleHooks   []Hook
 	lifecycleTimeout time.Duration
@@ -83,9 +79,9 @@ func New(opts ...Option) *Application {
 		app.errorHandler = emperror.NewNopHandler()
 	}
 
-	// Apply defaults
-	for _, def := range defaults {
-		def.apply(app)
+	// Default lifecycle timeout
+	if app.lifecycleTimeout == 0 {
+		app.lifecycleTimeout = defaultTimeout
 	}
 
 	return app
