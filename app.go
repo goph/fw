@@ -1,7 +1,6 @@
 package fw
 
 import (
-	"io"
 	"time"
 
 	"github.com/go-kit/kit/log"
@@ -58,7 +57,6 @@ type Application struct {
 	errorHandler emperror.Handler
 
 	tracer           opentracing.Tracer
-	closers          []io.Closer
 	entries          map[string]interface{}
 	lifecycleHooks   []Hook
 	lifecycleTimeout time.Duration
