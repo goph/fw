@@ -1,6 +1,10 @@
 package fw_test
 
-import "github.com/goph/fw"
+import (
+	"fmt"
+
+	"github.com/goph/fw"
+)
 
 func ExampleProvide() {
 	type A struct{}
@@ -53,4 +57,19 @@ func ExampleProvide_multipleConstructors() {
 			},
 		),
 	)
+}
+
+func ExampleInvoke() {
+	type A struct{}
+
+	fw.New(
+		fw.Provide(func() *A {
+			return &A{}
+		}),
+		fw.Invoke(func(*A) {
+			fmt.Print("invoked")
+		}),
+	)
+
+	// Output: invoked
 }

@@ -31,6 +31,19 @@ func (p provideOption) apply(app *Application) {
 	app.constructors = append(app.constructors, p...)
 }
 
+// Invoke registers functions that are executed on application initialization.
+//
+// See the documentation at http://go.uber.org/dig for details about invoke function definitions.
+func Invoke(funcs ...interface{}) Option {
+	return invokeOption(funcs)
+}
+
+type invokeOption []interface{}
+
+func (i invokeOption) apply(app *Application) {
+	app.invokes = append(app.invokes, i...)
+}
+
 // Logger sets the application logger used for logging application lifecycle.
 func Logger(logger log.Logger) Option {
 	return optionFunc(func(app *Application) {
@@ -62,6 +75,7 @@ func (o options) apply(app *Application) {
 type Application struct {
 	container    *dig.Container
 	constructors []interface{}
+	invokes      []interface{}
 
 	logger       log.Logger
 	errorHandler emperror.Handler
@@ -100,6 +114,16 @@ func New(opts ...Option) (*Application, error) {
 		err := app.container.Provide(ctor)
 		if err != nil {
 			err = emperror.WithStack(emperror.WithMessage(err, "failed to register constructor in the container"))
+
+			return nil, err
+		}
+	}
+
+	// Execute invoke functions
+	for _, fn := range app.invokes {
+		err := app.container.Invoke(fn)
+		if err != nil {
+			err = emperror.WithStack(emperror.WithMessage(err, "failed to invoke function"))
 
 			return nil, err
 		}
