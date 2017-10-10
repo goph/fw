@@ -86,6 +86,8 @@ func New(opts ...Option) (*Application, error) {
 	for _, ctor := range app.constructors {
 		err := app.container.Provide(ctor)
 		if err != nil {
+			err = emperror.WithStack(emperror.WithMessage(err, "failed to register constructor in the container"))
+
 			return nil, err
 		}
 	}
