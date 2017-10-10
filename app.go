@@ -73,20 +73,20 @@ func (o options) apply(app *Application) {
 
 // Application collects all dependencies and exposes them in a single context.
 type Application struct {
-	container    *dig.Container
-	constructors []interface{}
-	invokes      []interface{}
+	container        *dig.Container
+	constructors     []interface{}
+	invokes          []interface{}
+	lifecycle        *lifecycle
+	lifecycleTimeout time.Duration
 
 	logger       log.Logger
 	errorHandler emperror.Handler
-
-	lifecycleHooks   []Hook
-	lifecycleTimeout time.Duration
 }
 
 func New(opts ...Option) (*Application, error) {
 	app := &Application{
 		container: dig.New(),
+		lifecycle: new(lifecycle),
 	}
 
 	// Apply options
@@ -118,6 +118,9 @@ func New(opts ...Option) (*Application, error) {
 			return nil, err
 		}
 	}
+
+	// Register the lifecycle in the container.
+	app.container.Provide(func() Lifecycle { return app.lifecycle })
 
 	// Execute invoke functions
 	for _, fn := range app.invokes {

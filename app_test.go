@@ -1,10 +1,61 @@
 package fw_test
 
 import (
+	"testing"
+
 	"fmt"
 
 	"github.com/goph/fw"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
+
+func TestNew(t *testing.T) {
+	t.Run("ProvidesLifecycle", func(t *testing.T) {
+		found := false
+
+		_, err := fw.New(
+			fw.Invoke(func(lc fw.Lifecycle) {
+				assert.NotNil(t, lc)
+				found = true
+			}),
+		)
+
+		require.NoError(t, err)
+		assert.True(t, found)
+	})
+
+	t.Run("CircularGraphReturnsError", func(t *testing.T) {
+		type A struct{}
+		type B struct{}
+
+		_, err := fw.New(
+			fw.Provide(func(A) B { return B{} }),
+			fw.Provide(func(B) A { return A{} }),
+		)
+
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "fw_test.A ->fw_test.B ->fw_test.A")
+	})
+}
+
+func TestOptions(t *testing.T) {
+	t.Run("OptionsComposition", func(t *testing.T) {
+		var n int
+		construct := func() struct{} {
+			n++
+			return struct{}{}
+		}
+		use := func(struct{}) {
+			n++
+		}
+
+		_, err := fw.New(fw.Options(fw.Provide(construct), fw.Invoke(use)))
+
+		require.NoError(t, err)
+		assert.Equal(t, 2, n)
+	})
+}
 
 func ExampleProvide() {
 	type A struct{}
