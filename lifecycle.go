@@ -12,15 +12,11 @@ import (
 	"github.com/go-kit/kit/log/level"
 )
 
-func init() {
-	defaults = append(defaults, LifecycleTimeout(defaultTimeout))
-}
-
 // defaultTimeout is used the context is created within the Application (eg. in Run).
 const defaultTimeout = 15 * time.Second
 
-// Hook is a set of lifecycleHooks callbacks, either of which can be nil.
-// They are called during the application lifecycleHooks.
+// Hook is a set of lifecycle callbacks, either of which can be nil.
+// They are called during the application lifecycle.
 type Hook struct {
 	PreStart  func() error
 	OnStart   func(ctx context.Context, done chan<- interface{}) error
@@ -29,6 +25,20 @@ type Hook struct {
 	PreShutdown  func() error
 	OnShutdown   func(ctx context.Context) error
 	PostShutdown func() error
+}
+
+// Lifecycle accepts a Hook and invokes it's callbacks when appropriate.
+type Lifecycle interface {
+	Register(Hook)
+}
+
+type lifecycle struct {
+	hooks []Hook
+}
+
+// Register implements the Lifecycle interface.
+func (l *lifecycle) Register(h Hook) {
+	l.hooks = append(l.hooks, h)
 }
 
 // SignalHook stops the application based on os signals.
@@ -46,18 +56,11 @@ var SignalHook = Hook{
 	},
 }
 
-// LifecycleHook registers a lifecycle hook in the application.
-func LifecycleHook(h Hook) ApplicationOption {
-	return func(a *Application) {
-		a.lifecycleHooks = append(a.lifecycleHooks, h)
-	}
-}
-
 // LifecycleTimeout sets the default lifecycle timeout for the application.
-func LifecycleTimeout(d time.Duration) ApplicationOption {
-	return func(a *Application) {
+func LifecycleTimeout(d time.Duration) Option {
+	return optionFunc(func(a *Application) {
 		a.lifecycleTimeout = d
-	}
+	})
 }
 
 // Start runs all PreStart, OnStart and PostStart hooks,
@@ -70,16 +73,16 @@ func (a *Application) Start(ctx context.Context) (<-chan interface{}, error) {
 		)
 	}
 
-	done := make(chan interface{}, len(a.lifecycleHooks))
+	done := make(chan interface{}, len(a.lifecycle.hooks))
 
-	for _, hook := range a.lifecycleHooks {
+	for _, hook := range a.lifecycle.hooks {
 		err := invokeHook(hook.PreStart)
 		if err != nil {
 			return done, err
 		}
 	}
 
-	for _, hook := range a.lifecycleHooks {
+	for _, hook := range a.lifecycle.hooks {
 		if hook.OnStart != nil {
 			err := hook.OnStart(ctx, done)
 			if err != nil {
@@ -88,7 +91,7 @@ func (a *Application) Start(ctx context.Context) (<-chan interface{}, error) {
 		}
 	}
 
-	for _, hook := range a.lifecycleHooks {
+	for _, hook := range a.lifecycle.hooks {
 		err := invokeHook(hook.PostStart)
 		if err != nil {
 			return done, err
@@ -108,21 +111,21 @@ func (a *Application) Shutdown(ctx context.Context) error {
 		)
 	}
 
-	for _, hook := range a.lifecycleHooks {
+	for _, hook := range a.lifecycle.hooks {
 		err := invokeHook(hook.PreShutdown)
 		if err != nil {
 			return err
 		}
 	}
 
-	for _, hook := range a.lifecycleHooks {
+	for _, hook := range a.lifecycle.hooks {
 		err := invokeHookCtx(hook.OnShutdown, ctx)
 		if err != nil {
 			return err
 		}
 	}
 
-	for _, hook := range a.lifecycleHooks {
+	for _, hook := range a.lifecycle.hooks {
 		err := invokeHook(hook.PostShutdown)
 		if err != nil {
 			return err
